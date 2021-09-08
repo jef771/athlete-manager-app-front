@@ -1,0 +1,188 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" style="color:white;">Athlete Manager</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+  <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarColor02">
+     <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+           <a class="nav-link" (click)="onOpenModal(null!, 'add')">Add Athlete <span class="sr-only">(current)</span></a>
+        </li>
+     </ul>
+     <form class="form-inline my-2 my-lg-0">
+        <input type="search" (ngModelChange)="searchAthletes(key.value)" #key="ngModel" ngModel
+         name="key" id="searchName" class="form-control mr-sm-2" placeholder="Search athletes..." required>
+     </form>
+  </div>
+</nav>
+<div class="container" id="main-container">
+<div class="row">
+  <div *ngFor="let athlete of athletes" class="col-md-6 col-xl-3">
+     <div class="card m-b-30">
+        <div class="card-body row">
+           <div class="col-6">
+              <a href=""><img src="{{athlete?.imageUrl}}" alt="" class="img-fluid rounded-circle w-60"></a>
+           </div>
+           <div class="col-6 card-title align-self-center mb-0">
+              <h5>{{athlete?.athleteName}}</h5>
+              <p class="m-0">{{athlete?.athleteSport}}</p>
+           </div>
+        </div>
+        <ul class="list-group list-group-flush">
+           <li class="list-group-item"><i class="fa fa-envelope float-right"></i>{{athlete?.athleteEmail}}</li>
+           <li class="list-group-item"><i class="fa fa-date float-right"></i>{{athlete?.athleteDob}}</li>
+           <li class="list-group-item"><i class="fa fa-gender float-right"></i>{{athlete?.athleteGender}}</li>
+           <li class="list-group-item"><i class="fa fa-flag float-right"></i>Commitee : {{athlete?.athleteCommitee}}</li>
+        </ul>
+        <div class="card-body">
+           <div class="float-right btn-group btn-group-sm">
+              <a (click)="onOpenModal(athlete, 'edit')"class="btn btn-primary tooltips" data-placement="top" data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
+              <a (click)="onOpenModal(athlete, 'delete')"class="btn btn-secondary tooltips" data-placement="top" data-original-title="Delete"><i class="fa fa-times"></i></a>
+           </div>
+        </div>
+     </div>
+  </div>
+</div>
+
+<!-- Add Athlete Modal -->
+<div class="modal fade" id="addAthleteModal" tabindex="-1" role="dialog" aria-labelledby="addAthleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+       <div class="modal-header">
+          <h5 class="modal-title" id="addAthleteModalLabel">Add Employee</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+          </button>
+       </div>
+       <div class="modal-body">
+          <form #addForm="ngForm" (ngSubmit)="onAddAthlete(addForm)">
+          <div class="form-group">
+             <label for="name">Name</label>
+             <input type="text" ngModel name="athleteName" class="form-control" id="athleteName" placeholder="Name" required>
+          </div>
+          <div class="form-group">
+            <label for="name">Gender</label>
+            <div>
+              <input type="radio" value="MALE" name="athleteGender" id="athleteGender" ngModel required> Male
+            </div>
+            <div>
+              <input type="radio" value="FEMALE" name="athleteGender" id="athleteGender" ngModel required> Female
+            </div>
+         </div>
+          <div class="form-group">
+            <label for="name">Date of Birth</label>
+            <input type="date" ngModel name="athleteDob" class="form-control" id="athleteDob" required>
+         </div>
+          <div class="form-group">
+             <label for="email">Email Address</label>
+             <input type="email" ngModel name="athleteEmail" class="form-control" id="athleteEmail" placeholder="Email" required>
+          </div>
+          <div class="form-group">
+             <label for="phone">Sport</label>
+             <input type="text" ngModel name="athleteSport" class="form-control" id="athleteSport" placeholder="Sport" required>
+          </div>
+          <div class="form-group">
+             <label for="phone">Commitee</label>
+             <input type="text" ngModel name="athleteCommitee" class="form-control" id="athleteCommitee" placeholder="Commitee" required>
+          </div>
+          <div class="form-group">
+             <label for="phone">Image URL</label>
+             <input type="text" ngModel name="imageUrl" class="form-control" id="imageUrl" placeholder="Image URL" required>
+          </div>
+          <div class="modal-footer">
+             <button type="button" id="add-atlhete-form" class="btn btn-secondary" data-dismiss="modal">Close</button>
+             <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary" >Save changes</button>
+          </div>
+          </form>
+       </div>
+    </div>
+  </div>
+  </div>
+
+</div>
+
+<!-- Edit Athlete Modal -->
+<div class="modal fade" id="editAthleteModal" tabindex="-1" role="dialog" aria-labelledby="athleteEditModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+     <div class="modal-content">
+        <div class="modal-header">
+           <h5 class="modal-title" id="updateAthleteModalLabel">Edit Athlete</h5>
+           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+           </button>
+        </div>
+        <div class="modal-body">
+           <form #editForm="ngForm">
+              <div class="form-group">
+                 <label for="name">Name</label>
+                 <input type="text" ngModel={{editAthlete?.athleteName}} name="athletName" class="form-control" id="athleteName" aria-describedby="emailHelp" placeholder="Name">
+              </div>
+              <input type="hidden" ngModel={{editAthlete?.athleteId}} name="athleteId" class="form-control" id="id" placeholder="Email">
+              <div class="form-group">
+                <label for="name">Gender</label>
+                <input type="text" ngModel={{editAthlete?.athleteGender}} name="athleteGender" class="form-control" id="athleteGender" aria-describedby="emailHelp" placeholder="Gender">
+             </div>
+             <div class="form-group">
+              <label for="name">Gender</label>
+            <div>
+              <input type="radio" value="MALE" name="athleteGender" id="athleteGender" ngModel required> Male
+            </div>
+            <div>
+              <input type="radio" value="FEMALE" name="athleteGender" id="athleteGender" ngModel required> Female
+            </div>
+           </div>
+              <div class="form-group">
+                 <label for="email">Email Address</label>
+                 <input type="email" ngModel={{editAthlete?.athleteEmail}} name="athleteEmail" class="form-control" id="athleteEmail" placeholder="Email">
+              </div>
+              <div class="form-group">
+                 <label for="phone">Sport</label>
+                 <input type="text" ngModel={{editAthlete?.athleteSport}} name="athleteSport" class="form-control" id="athleteSport" placeholder="Sport">
+              </div>
+              <div class="form-group">
+                 <label for="phone">Commitee</label>
+                 <input type="text" ngModel={{editAthlete?.athleteCommitee}} name="athleteCommitee" class="form-control" id="athleteCommitee" placeholder="Commitee">
+              </div>
+              <div class="form-group">
+                <label for="phone">Image Url</label>
+                <input type="text" ngModel={{editAthlete?.imageUrl}} name="imageUrl" class="form-control" id="imageUrl" placeholder="Image Url">
+             </div>
+
+              <div class="modal-footer">
+                 <button type="button" id="" data-dismiss="modal" class="btn btn-secondary">Close</button>
+                 <button (click)="onUpdateAthlete(editForm.value)"data-dismiss="modal" class="btn btn-primary" >Save changes</button>
+              </div>
+           </form>
+        </div>
+     </div>
+  </div>
+</div>
+
+<!-- Delete Athlete Modal -->
+<div class="modal fade" id="deleteAthleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+     <div class="modal-content">
+        <div class="modal-header">
+           <h5 class="modal-title" id="deleteModelLabel">Delete Employee</h5>
+           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+           </button>
+        </div>
+        <div class="modal-body">
+           <p>Are you sure you want to delete athlete {{deleteAthlete?.athleteName}}?</p>
+           <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+              <button (click)="onDeleteAthlete(deleteAthlete.athleteId)"class="btn btn-danger" data-dismiss="modal">Yes</button>
+           </div>
+        </div>
+     </div>
+  </div>
+</div>
+
+<!-- Notification for no employees -->
+<div *ngIf="athletes?.length == 0" class="col-lg-12 col-md-12 col-xl-12">
+<div class="alert alert-info" role="alert">
+  <h4 class="alert-heading">NO ATHLETESS!</h4>
+  <p>No Athletes were found.</p>
+</div>
+</div>
